@@ -1,7 +1,4 @@
-import {
-  DEFAULT_SCREEN_TRANSFORM_2D,
-  type ScreenTransform2DSettings,
-} from "@vincentt-xr/sdk";
+import type { ScreenTransform2DSettings } from "@vincentt-xr/sdk";
 
 type CanvasPosition = { x: number; y: number };
 type CanvasSize = { width: number; height: number };
@@ -20,7 +17,7 @@ const canvasTransform = (
   size: CanvasSize,
   renderOrder: number,
 ): ScreenTransform2DSettings => ({
-  ...DEFAULT_SCREEN_TRANSFORM_2D,
+  enabled: true,
   position,
   size,
   pivot: [0.5, 0.5],
