@@ -20,9 +20,8 @@ import {
   useXRReady,
 } from "@vincentt-xr/sdk/low-level";
 import { mountViewerBeacon, reportSession } from "@vincentt-xr/analytics";
-import { Segmentation } from "@vincentt-xr/sdk/tracking";
 import { openConsoleChannel } from "@vincentt-xr/harness";
-import { PerspectiveCamera, useTexture } from "@react-three/drei";
+import { PerspectiveCamera } from "@react-three/drei";
 
 import { Scene } from "./Scene";
 import { PreviewAnchors } from "./PreviewAnchors";
@@ -44,10 +43,6 @@ import {
 } from "./experienceStatus";
 import { MediaSourceControl } from "./MediaSourceControl";
 import type { MediaPreset } from "./MediaSourceControl";
-import {
-  PodiumPhotopeaSceneProvider,
-  usePodiumPhotopeaScene,
-} from "./PodiumPhotopeaSceneContext";
 
 // Fallback clip for the "video" source when no VITE_INPUT_URL is supplied.
 // Referenced by URL (not bundled) so it stays out of the published bundle —
@@ -73,26 +68,6 @@ const MobileXRAcceptanceHarness = MOBILE_XR_ACCEPTANCE_HARNESS_ENABLED
         .MobileXRAcceptanceHarness,
     }))
   : null;
-
-/**
- * VideoBackground is the camera compositor, so it must own both the live
- * foreground and its replacement background. A ScreenImage lives in the
- * screen-UI render group, which is intentionally drawn above that compositor
- * and would hide the camera feed. This local copy is the SDK default Screen
- * Image, passed in as the compositor's image texture instead.
- */
-const PortraitSegmentationBackground = () => {
-  const { scene } = usePodiumPhotopeaScene();
-  const backgroundTexture = useTexture(scene.backgroundSrc);
-
-  return (
-    <VideoBackground
-      segmentation="portrait"
-      customBackground={backgroundTexture}
-      renderOrder={-999}
-    />
-  );
-};
 
 /**
  * Picks the media source and starts the XR session. Runs once on mount.
@@ -427,8 +402,11 @@ export const Shell = () => {
       >
         <MediaSourceBinder onSourceSelected={setSelected} />
         <PerspectiveCamera makeDefault position={[0, 0, 5]} fov={45} />
-        <Segmentation type="portrait" />
-        <PortraitSegmentationBackground />
+        <VideoBackground
+          segmentationMask={undefined}
+          customBackground="#6366f1"
+          renderOrder={-999}
+        />
         <ambientLight intensity={1} />
         <directionalLight position={[5, 5, 5]} intensity={1} />
         <Scene />
@@ -447,9 +425,7 @@ export const Shell = () => {
 
 const App = () => (
   <XRProvider quality={RECORD.enabled ? false : undefined}>
-    <PodiumPhotopeaSceneProvider>
-      <Shell />
-    </PodiumPhotopeaSceneProvider>
+    <Shell />
   </XRProvider>
 );
 

@@ -41,8 +41,6 @@
     "src/Scene.tsx",
     "src/frame.config.ts",
     "src/AmbientCameraFlash.tsx",
-    "src/HandDiscoveryPrompt.tsx",
-    "src/PodiumPhotopeaSceneContext.tsx",
-    "src/podiumPhotopeaScene.ts"
+    "src/HeadFollow.tsx"
   ]
 }
